@@ -129,4 +129,46 @@ class StepLineSqBouncyView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    data class SLSBNode(var i : Int, private val state : State = State()) {
+
+        private var next : SLSBNode? = null
+        private var prev : SLSBNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < nodes - 1) {
+                next = SLSBNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            canvas.drawSLSNode(i, state.scale, paint)
+            next?.draw(canvas, paint)
+        }
+
+        fun update(cb : (Float) -> Unit) {
+            state.update(cb)
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            state.startUpdating(cb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : SLSBNode {
+            var curr : SLSBNode? = next
+            if (dir == -1) {
+                curr = prev
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
+        }
+    }
 }
