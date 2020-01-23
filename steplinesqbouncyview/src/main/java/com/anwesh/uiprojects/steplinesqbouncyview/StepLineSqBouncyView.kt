@@ -19,7 +19,7 @@ val scGap : Float = 0.02f / lines
 val strokeFactor : Int = 90
 val foreColor : Int = Color.parseColor("#3F51B5")
 val backColor : Int = Color.parseColor("#BDBDBD")
-val delay : Long = 20
+val delay : Long = 20L / lines
 val fullDeg : Float = 360f
 val sizeFactor : Float = 2.9f
 val miniSquareFactor : Float = 3f
@@ -31,21 +31,23 @@ fun Float.sinify() : Float = Math.sin(Math.PI * this).toFloat()
 
 fun Canvas.drawStepLineSquare(i : Int, scale : Float, size : Float, paint : Paint) {
     val sf = scale.sinify().divideScale(i, lines)
-    val deg : Float = fullDeg / nodes
+    val deg : Float = fullDeg / lines
     val m : Float = size / miniSquareFactor
-    val x : Float = 2 * size * sf
+    val x : Float = -size + 2 * size * sf
     save()
     rotate(deg * i)
     drawLine(-size, -size, x, -size, paint)
     save()
-    translate(-size + x, -size)
+    translate(x, -size)
     drawRect(RectF(-m, -m, m, m), paint)
     restore()
     restore()
 }
 
 fun Canvas.drawStepLineSquares(scale : Float, size : Float, paint : Paint) {
-    for (j in 0..(lines - 1)) {
+    val scDiv : Double = 1.0 / lines
+    val i : Int = Math.floor(scale.sinify() / scDiv).toInt()
+    for (j in 0..i) {
         drawStepLineSquare(j, scale, size, paint)
     }
 }
