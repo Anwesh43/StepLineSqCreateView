@@ -171,4 +171,28 @@ class StepLineSqBouncyView(ctx : Context) : View(ctx) {
             return this
         }
     }
+
+    data class StepBouncyLine(var i : Int) {
+
+        private val root : SLSBNode = SLSBNode(0)
+        private var curr : SLSBNode = root
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            root.draw(canvas, paint)
+        }
+
+        fun update(cb : (Float) -> Unit) {
+            curr.update {
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                cb(it)
+            }
+        }
+
+        fun startUpdating(cb : () -> Unit) {
+            curr.startUpdating(cb)
+        }
+    }
 }
